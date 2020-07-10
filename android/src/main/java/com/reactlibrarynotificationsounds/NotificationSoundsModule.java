@@ -40,9 +40,21 @@ public class NotificationSoundsModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getNotifications(final Promise promise) {
+    public void getNotifications(String soundType, final Promise promise) {
         RingtoneManager manager = new RingtoneManager(this.reactContext);
-        manager.setType(RingtoneManager.TYPE_NOTIFICATION);
+        Integer ringtoneManagerType;
+
+        if (soundType.equals("alarm")) {
+            ringtoneManagerType = RingtoneManager.TYPE_ALARM;
+        } else if (soundType.equals("ringtone")) {
+            ringtoneManagerType = RingtoneManager.TYPE_RINGTONE;
+        } else if (soundType.equals("notification")) {
+            ringtoneManagerType = RingtoneManager.TYPE_NOTIFICATION;
+        } else {
+            ringtoneManagerType = RingtoneManager.TYPE_ALL;
+        }
+
+        manager.setType(ringtoneManagerType);
         Cursor cursor = manager.getCursor();
         WritableArray list = Arguments.createArray();
 
@@ -53,8 +65,8 @@ public class NotificationSoundsModule extends ReactContextBaseJavaModule {
 
             WritableMap newSound = Arguments.createMap();
             newSound.putString("title", notificationTitle);
-            newSound.putString("url", notificationUri + "/" + id );
-            newSound.putString("soundID", id );
+            newSound.putString("url", notificationUri + "/" + id);
+            newSound.putString("soundID", id);
 
             list.pushMap(newSound);
             Log.d("getNotifications: ", notificationUri + id);
@@ -62,23 +74,34 @@ public class NotificationSoundsModule extends ReactContextBaseJavaModule {
         promise.resolve(list);
     }
 
+    private Ringtone ringtone;
 
     @ReactMethod
-    public void playSample(String uri){
+    public void playSample(String uri) {
         try {
             Uri notification;
             if (uri == null || uri.length() == 0) {
                 notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            }
-            else {
+            } else {
                 notification = Uri.parse(uri);
             }
-            Ringtone r = RingtoneManager.getRingtone(this.reactContext, notification);
-            r.play();
+            if (ringtone != null)
+                ringtone.stop();
+            ringtone = RingtoneManager.getRingtone(this.reactContext, notification);
+            ringtone.play();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    @ReactMethod
+    public void stopSample() {
+        try {
+            if (ringtone != null)
+                ringtone.stop();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

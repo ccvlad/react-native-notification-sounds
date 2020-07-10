@@ -1,10 +1,14 @@
-import {NativeModules, Platform} from 'react-native';
+import { NativeModules, Platform } from "react-native";
 
-const {NotificationSounds} = NativeModules;
+const { NotificationSounds } = NativeModules;
 
 export default NotificationSounds;
 
-export const playSampleSound = soundObject => {
-  const sound = Platform.OS === 'ios' ? soundObject.soundID : soundObject.url;
+export const playSampleSound = (soundObject) => {
+  const sound = Platform.OS === "ios" ? soundObject.soundID : soundObject.url;
   NotificationSounds.playSample(sound);
+};
+
+export const stopSampleSound = () => {
+  NotificationSounds.stopSample();
 };

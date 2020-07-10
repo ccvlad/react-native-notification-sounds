@@ -1,12 +1,14 @@
-declare module 'react-native-notification-sounds' {
+declare module "react-native-notification-sounds" {
   interface Sound {
-    soundID: string
-    url: string
-    title: string
+    soundID: string;
+    url: string;
+    title: string;
   }
 
-  export function playSampleSound(s: Sound): void
+  export function playSampleSound(s: Sound): void;
 
-  type NotificationSounds = { getNotifications(): Promise<Sound[]> }
-  export default NotificationSounds
+  export function stopSampleSound(): void;
+
+  type NotificationSounds = { getNotifications(type: string): Promise<Sound[]> };
+  export default NotificationSounds;
 }
