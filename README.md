@@ -42,13 +42,19 @@ get the list of System notification sounds. This function returns an array
 the array contains Title, Url, SoundID
 */
 NotificationSounds.getNotifications().then(soundsList => {
-    console.warn('SOUNDS', JSON.stringify(SoundsList));
-    /* 
-	Play the notification sound.
-	pass the complete sound object.
+  console.warn('SOUNDS', JSON.stringify(SoundsList));
+
+	/* 
+		Only Android.
+		Would be use AudioAttributes (USAGE_*) to play sound in selected stream.
+	*/
+	const usage = 'notification' // 'alarm' | 'ringtone' | 'notification' | 'unknown'
+  /* 
+		Play the notification sound.
+		pass the complete sound object.
     This function can be used for playing the sample sound
 	*/
-	playSampleSound(SoundsList[1]); 
+	playSampleSound(SoundsList[1], usage); // the usage is not required
 });
 
 ```
