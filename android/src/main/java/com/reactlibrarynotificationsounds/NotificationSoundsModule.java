@@ -3,6 +3,8 @@ package com.reactlibrarynotificationsounds;
 import android.database.Cursor;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
+import android.media.AudioAttributes;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
@@ -77,17 +79,34 @@ public class NotificationSoundsModule extends ReactContextBaseJavaModule {
     private Ringtone ringtone;
 
     @ReactMethod
-    public void playSample(String uri) {
+    public void playSample(String uri, String soundType) {
         try {
             Uri notification;
+            Integer usage;
+
             if (uri == null || uri.length() == 0) {
                 notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             } else {
                 notification = Uri.parse(uri);
             }
+
+            if (soundType.equals("alarm")) {
+                usage = AudioAttributes.USAGE_ALARM;
+            } else if (soundType.equals("ringtone")) {
+                usage = AudioAttributes.USAGE_NOTIFICATION_RINGTONE;
+            } else if (soundType.equals("notification")) {
+                usage = AudioAttributes.USAGE_NOTIFICATION;
+            } else {
+                usage = AudioAttributes.USAGE_UNKNOWN;
+            }
+
             if (ringtone != null)
                 ringtone.stop();
+
             ringtone = RingtoneManager.getRingtone(this.reactContext, notification);
+            ringtone.setAudioAttributes(new AudioAttributes.Builder()
+                    .setUsage(usage)
+                    .build());
             ringtone.play();
         } catch (Exception e) {
             e.printStackTrace();

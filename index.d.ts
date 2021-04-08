@@ -5,7 +5,7 @@ declare module "react-native-notification-sounds" {
     title: string;
   }
 
-  export function playSampleSound(s: Sound): void;
+  export function playSampleSound(s: Sound, t?: string): void;
 
   export function stopSampleSound(): void;
 
